@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Business Between Classes · Audiobook</title>
+<style>
+:root{
+  --ink:#2b2823; --ink-soft:#5b554c; --paper:#fbf7ee; --card:#ffffff;
+  --sage:#5f8a6b; --sage-dk:#3f6249; --sage-lt:#e3ede4;
+  --saffron:#e0a526; --saffron-lt:#fbefd2; --line:#e6dfd0;
+  --night:#24313a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:19px;line-height:1.6}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 0 14px}
+.brand{font-weight:700;color:var(--sage-dk);font-size:15px;letter-spacing:.04em;text-transform:uppercase}
+.stars{display:flex;gap:6px}
+.star{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:#efe9dc;color:#a59c8a;border:2px solid transparent}
+.star.done{background:var(--saffron);color:#fff}
+.star.now{border-color:var(--sage)}
+
+/* cover */
+#cover{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:0 6px 24px rgba(60,50,30,.10)}
+#cover .art{background:var(--night)}
+#cover .body{padding:22px 26px 28px}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:2.1em;line-height:1.15;margin:0 0 6px}
+.sub{color:var(--ink-soft);margin:0 0 18px;font-size:.92em}
+.btn{border:none;border-radius:999px;padding:12px 22px;font-weight:700}
+.btn.main{background:var(--sage);color:#fff}
+.btn.main:hover{background:var(--sage-dk)}
+.btn.ghost{background:var(--sage-lt);color:var(--sage-dk)}
+.btn.gold{background:var(--saffron);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.howto{margin-top:18px;background:var(--saffron-lt);border-radius:14px;padding:12px 16px;font-size:.88em}
+.howto b{color:#8a5f00}
+
+/* reader */
+#reader{display:none}
+.page{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:0 6px 24px rgba(60,50,30,.10)}
+.page .art svg{display:block;width:100%;height:auto}
+.page .body{padding:18px 24px 22px}
+.plabel{display:inline-flex;align-items:center;gap:10px;font-weight:700;color:var(--sage-dk)}
+.plabel .letter{width:40px;height:40px;border-radius:12px;background:var(--sage);color:#fff;display:grid;place-items:center;font-size:22px;font-family:Georgia,serif}
+.text{font-size:1.12em;line-height:1.75;margin:14px 0 0;transition:filter .3s}
+.text.hidden{filter:blur(7px);user-select:none}
+.kw{background:var(--saffron-lt);border-bottom:2px solid var(--saffron);border-radius:4px;padding:0 3px;cursor:pointer}
+.kw:hover,.kw:focus{background:#f6dd9f;outline:none}
+.speaking{background:#dcebdf;border-radius:4px}
+
+.player{position:sticky;bottom:0;margin-top:16px;background:var(--sage-dk);color:#fff;border-radius:18px;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 -4px 18px rgba(0,0,0,.12)}
+.pbtn{width:52px;height:52px;border-radius:50%;border:none;background:var(--saffron);color:#fff;font-size:22px;display:grid;place-items:center;flex:none}
+.nav{width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:18px;flex:none}
+.nav:disabled{opacity:.35;cursor:default}
+.bar{flex:1;min-width:140px}
+.track{height:8px;background:rgba(255,255,255,.22);border-radius:99px;overflow:hidden;cursor:pointer}
+.fill{height:100%;width:0;background:var(--saffron)}
+.meta{display:flex;justify-content:space-between;font-size:13px;opacity:.85;margin-top:4px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:99px;padding:5px 12px;font-size:14px}
+.chip.on{background:#fff;color:var(--sage-dk);border-color:#fff}
+
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 0}
+.tab{border:none;background:#efe9dc;color:var(--ink-soft);border-radius:10px;padding:6px 12px;font-weight:700}
+.tab.on{background:var(--sage);color:#fff}
+
+/* glossary */
+dialog{border:none;border-radius:20px;padding:0;max-width:560px;width:calc(100% - 32px);box-shadow:0 10px 40px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(30,30,25,.45)}
+.dlg-h{background:var(--sage);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.dlg-h h2{margin:0;font-size:1.1em}
+.x{background:none;border:none;color:#fff;font-size:26px;line-height:1}
+table{width:100%;border-collapse:collapse;font-size:.95em}
+td,th{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left}
+th{background:#f6f1e5;font-size:.8em;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+td.ar{direction:rtl;text-align:right;font-size:1.15em;font-family:"Geeza Pro","Segoe UI",Tahoma,sans-serif}
+td.p{color:var(--sage-dk);font-weight:700;text-align:center}
+
+#pop{position:absolute;z-index:20;background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;font-size:16px;max-width:260px;display:none;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#pop .ar{font-size:1.35em;direction:rtl;display:block;margin-top:2px;color:#f8d98a}
+#pop .say{margin-top:8px;background:var(--saffron);border:none;color:#fff;border-radius:99px;padding:3px 12px;font-size:14px}
+
+/* finish */
+#finish{display:none;text-align:center;background:var(--card);border-radius:22px;padding:30px 24px;box-shadow:0 6px 24px rgba(60,50,30,.10)}
+#finish h2{font-family:Georgia,serif;font-size:1.8em;margin:.2em 0}
+.medal{font-size:64px}
+.cert{margin:20px auto 0;max-width:560px;border:3px double var(--saffron);border-radius:16px;padding:20px;background:#fffdf7}
+.cert input{font:inherit;border:none;border-bottom:2px solid var(--sage);text-align:center;width:80%;background:transparent;padding:4px;font-size:1.15em}
+footer{text-align:center;color:var(--ink-soft);font-size:14px;padding:22px 0 30px}
+.src{font-size:12px;opacity:.85}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media (max-width:560px){
+  body{font-size:17px} h1{font-size:1.7em}
+  .page .body{padding:14px 16px 18px}
+}
+@media print{
+  header.top,.player,.tools,.howto,.row .btn,footer .src{display:none!important}
+  #cover,#reader{display:none!important} #finish{display:block!important;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">IELTS Reading · Vocab List 6 (Commerce) · Audiobook</div>
+    <div class="stars" id="stars" aria-label="Paragraphs listened to"></div>
+  </header>
+
+  <!-- COVER -->
+  <section id="cover">
+    <div class="art" id="coverArt"></div>
+    <div class="body">
+      <h1>A Business Between Classes</h1>
+      <p class="sub">The true-to-life story of Mariam, an education student who runs a perfume business from her bedroom. 7 short chapters · about 4 minutes.</p>
+      <div class="row">
+        <button class="btn main" id="startBtn">▶ Start listening</button>
+        <button class="btn ghost" id="glossBtn1">📖 Key words (Arabic)</button>
+      </div>
+      <div class="howto">
+        <b>How to use:</b> Listen to each paragraph and follow the text. Tap a <span class="kw">highlighted word</span> to see its Arabic meaning.
+        Try <b>Listen only</b> mode to hide the text and practise your listening, then listen again with the text.
+      </div>
+    </div>
+  </section>
+
+  <!-- READER -->
+  <section id="reader">
+    <div class="page">
+      <div class="art" id="art"></div>
+      <div class="body">
+        <div class="plabel"><span class="letter" id="pLetter">A</span><span id="pCount">Paragraph 1 of 7</span></div>
+        <p class="text" id="pText"></p>
+        <div class="tools">
+          <button class="btn ghost" id="hideBtn">🙈 Listen only</button>
+          <button class="btn ghost" id="glossBtn2">📖 Key words</button>
+          <button class="btn ghost" id="coverBtn">🏠 Cover</button>
+        </div>
+        <div class="tabs" id="tabs"></div>
+      </div>
+    </div>
+
+    <div class="player">
+      <button class="nav" id="prevBtn" aria-label="Previous paragraph">⏮</button>
+      <button class="pbtn" id="playBtn" aria-label="Play">▶</button>
+      <button class="nav" id="nextBtn" aria-label="Next paragraph">⏭</button>
+      <div class="bar">
+        <div class="track" id="track"><div class="fill" id="fill"></div></div>
+        <div class="meta"><span id="tNow">0:00</span><span class="src" id="srcLbl"></span><span id="tDur">0:00</span></div>
+      </div>
+      <div class="opts">
+        <button class="chip" data-rate="0.75">0.75×</button>
+        <button class="chip on" data-rate="1">1×</button>
+        <button class="chip" data-rate="1.25">1.25×</button>
+        <button class="chip on" id="autoBtn" title="Play the next paragraph automatically">Auto ⏭</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINISH -->
+  <section id="finish">
+    <div class="medal">🏅</div>
+    <h2>You listened to the whole story!</h2>
+    <p class="sub">All 7 paragraphs complete. Now try the reading questions on your handout.</p>
+    <div class="cert">
+      <div style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage-dk);font-weight:700">Certificate of Listening</div>
+      <p style="margin:10px 0 4px">This certifies that</p>
+      <input id="certName" placeholder="Type your name" aria-label="Your name">
+      <p style="margin:10px 0 0">completed the audiobook <b>“A Business Between Classes”</b><br>IELTS Reading · B1+ Vocabulary List 6 (Commerce)</p>
+      <p style="font-size:14px;color:var(--ink-soft)" id="certDate"></p>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:18px">
+      <button class="btn gold" onclick="window.print()">🖨 Print / Save as PDF</button>
+      <button class="btn ghost" id="againBtn">↺ Listen again</button>
+    </div>
+  </section>
+
+  <footer>Designed by: Nazila Motahari · Higher Colleges of Technology</footer>
+</div>
+
+<div id="pop" role="dialog"></div>
+
+<dialog id="gloss">
+  <div class="dlg-h"><h2>Key words from Vocab List 6</h2><button class="x" id="glossClose" aria-label="Close">×</button></div>
+  <table>
+    <thead><tr><th>Word</th><th>Arabic</th><th style="text-align:center">Para.</th></tr></thead>
+    <tbody id="glossBody"></tbody>
+  </table>
+</dialog>
+
+<audio id="aud" preload="metadata"></audio>
+
+<script>
+/* ============ CONTENT ============ */
+const PARAS = [
+ {id:"A", text:`At eleven o'clock at night, when most of her classmates are asleep, Mariam Al Mazrouei is still awake. The 20-year-old education student is sitting on her bedroom floor, mixing oud, rose and amber oils into small glass bottles. Two years ago, she made a couple of bottles as gifts for her friends' birthdays. Today, she has more than 300 customers across the UAE. "Honestly, I never planned to be a businesswoman," she says. "I just wanted my friends to smell nice."`},
+ {id:"B", text:`The business runs almost completely through an Instagram account. Customers send a request by direct message, and Mariam replies with the price and a delivery date. Before she starts any order, the customer must pay a deposit of half the price. When the money arrives, she sends a message to confirm the order. Every bottle carries a gold label with the name of her brand, and every box includes a small card with her signature. Mariam's mother is in charge of packing, while her younger sister has the role of social media assistant.`},
+ {id:"C", text:`Finding good materials took longer than Mariam expected. Her oud comes from an old family trader in the Abu Dhabi souq, who has been in the perfume trade for forty years. Her rose oil, however, comes from France. Because she cannot travel to buy it herself, she uses a small agency in Dubai that buys oils from French farms for small businesses in the Gulf. She must transfer the money to the agency's account in euros, so when the exchange rate changes, her costs change too. "In one month, my rose oil became fifteen percent more expensive," she says.`},
+ {id:"D", text:`The most painful lessons were about money. In her first year, Mariam allowed friends to buy on credit and pay later. By the end of the semester, several of them owed her more than 2,000 dirhams in total, and some became rude when she asked for the money. To buy more oils, she had to take a loan of 3,000 dirhams from her father. "I paid back every dirham," she says, "but I made a new rule: no deposit, no perfume. Friends are friends, but business is business."`},
+ {id:"E", text:`Running a business while studying was not always easy. In her second year, Mariam's grades fell, and she nearly failed one of her teaching practice courses. Her family held a meeting and voted to close the business during exam weeks. Mariam was unhappy at first, but she now agrees it was the right decision. "My studies are my duty to my family and to myself," she explains. "The business can wait two weeks. My future pupils cannot."`},
+ {id:"F", text:`Dr Hessa Al Suwaidi, who teaches business at a university in Dubai, has studied young Emirati women who run small businesses. Last year, she presented her research at a conference in Abu Dhabi. She believes these students learn skills that are hard to teach in a classroom: how to answer customers politely, how to plan their money and how to solve problems quickly. "Even students who never want a business career benefit," she says. "Employers want graduates who can take responsibility, and a small business teaches exactly that."`},
+ {id:"G", text:`However, experts who support student businesses say they need careful planning. Students should open a separate bank account for the business, so that their own money and the business's money do not mix. They should also find out whether they need a licence, because selling from home without one can cause problems. Others warn that a business should never become more important than a degree. Mariam, who will graduate next year, has made a promise to herself. She will become a teacher first, and her perfume business will stay small, at least for now.`}
+];
+
+const WORDS = [
+ {w:"request", ar:"طَلَب", p:"B", m:"asking for something", match:/\brequest\b/},
+ {w:"deposit", ar:"عُربون", p:"B", m:"part of the price paid first", match:/\bdeposit\b/},
+ {w:"confirm", ar:"يُؤَكِّد", p:"B", m:"say that something is definite", match:/\bconfirm\b/},
+ {w:"label", ar:"مُلصَق", p:"B", m:"a sticker with information", match:/\blabel\b/},
+ {w:"in charge of", ar:"مسؤول عن", p:"B", m:"responsible for", match:/\bin charge of\b/},
+ {w:"trade", ar:"تِجارة", p:"C", m:"buying and selling", match:/\btrade\b/},
+ {w:"agency", ar:"وَكالة", p:"C", m:"a company that does work for others", match:/\bagency\b/},
+ {w:"account", ar:"حِساب", p:"C", m:"bank account for money", match:/\baccount\b/},
+ {w:"credit", ar:"الدَّفع لاحِقًا", p:"D", m:"buy now, pay later", match:/\bcredit\b/},
+ {w:"owe", ar:"يَدين بـ", p:"D", m:"need to pay money back", match:/\bowed\b/},
+ {w:"loan", ar:"قَرض", p:"D", m:"money you borrow", match:/\bloan\b/},
+ {w:"duty", ar:"واجِب", p:"E", m:"something you must do", match:/\bduty\b/}
+];
+
+/* ============ ILLUSTRATIONS (inline SVG) ============ */
+// A seated/standing Emirati woman in abaya & shayla
+function lady(x,y,s,opts={}){
+  const c=opts.c||"#1d1d22", face=opts.face||"#c99a74";
+  if(opts.sit){
+    return `<g transform="translate(${x},${y}) scale(${s})">
+      <path d="M-34 70 Q-40 30 -18 8 L18 8 Q40 30 34 70 Z" fill="${c}"/>
+      <ellipse cx="0" cy="72" rx="46" ry="12" fill="${c}"/>
+      <path d="M-20 -26 Q0 -52 20 -26 L22 10 Q0 22 -22 10 Z" fill="${c}"/>
+      <ellipse cx="0" cy="-14" rx="11" ry="13" fill="${face}"/>
+      <path d="M18 30 Q34 34 40 48" stroke="${face}" stroke-width="7" stroke-linecap="round" fill="none"/>
+    </g>`;
+  }
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <path d="M-26 110 L-18 10 Q0 0 18 10 L26 110 Z" fill="${c}"/>
+    <path d="M-20 -26 Q0 -52 20 -26 L22 14 Q0 24 -22 14 Z" fill="${c}"/>
+    <ellipse cx="0" cy="-14" rx="11" ry="13" fill="${face}"/>
+  </g>`;
+}
+function bottle(x,y,s,col,lbl=true){
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <rect x="-5" y="-34" width="10" height="9" rx="2" fill="#b8892a"/>
+    <rect x="-3" y="-26" width="6" height="6" fill="#d9cfc0"/>
+    <path d="M-16 -20 h32 a6 6 0 0 1 6 6 v30 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-30 a6 6 0 0 1 6 -6z" fill="${col}" opacity=".92"/>
+    <path d="M-12 -16 v26" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/>
+    ${lbl?`<rect x="-10" y="-4" width="20" height="11" rx="2" fill="#e0a526"/>`:""}
+  </g>`;
+}
+const SVG = (inner,bg="#fbf3df") => `<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="640" height="300" fill="${bg}"/>${inner}</svg>`;
+
+const ART = {
+cover: SVG(`
+  <circle cx="540" cy="70" r="34" fill="#f6e2a8"/><circle cx="556" cy="60" r="30" fill="#24313a"/>
+  ${[...Array(18)].map((_,i)=>`<circle cx="${(i*97)%640}" cy="${(i*53)%140+10}" r="${i%3?1.4:2.2}" fill="#fff" opacity=".7"/>`).join("")}
+  <rect x="0" y="230" width="640" height="70" fill="#1a242b"/>
+  ${bottle(170,215,1.6,"#b85c6e")}${bottle(250,222,1.3,"#d9a440")}${bottle(320,215,1.6,"#6b4a33")}${bottle(395,222,1.3,"#9fb7a3")}${bottle(470,215,1.6,"#b85c6e")}
+  <path d="M120 150 q20 -30 0 -60 M320 140 q22 -30 0 -60 M520 150 q20 -30 0 -60" stroke="#e0a526" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round"/>
+`,"#24313a"),
+
+A: SVG(`
+  <rect x="0" y="0" width="640" height="300" fill="#2f3e48"/>
+  <rect x="420" y="30" width="150" height="120" rx="8" fill="#1d2a33" stroke="#8a7a5c" stroke-width="6"/>
+  <circle cx="525" cy="70" r="20" fill="#f6e2a8"/><circle cx="535" cy="64" r="18" fill="#1d2a33"/>
+  <circle cx="455" cy="60" r="1.6" fill="#fff"/><circle cx="480" cy="110" r="1.6" fill="#fff"/><circle cx="545" cy="125" r="1.6" fill="#fff"/>
+  <line x1="495" y1="30" x2="495" y2="150" stroke="#8a7a5c" stroke-width="4"/>
+  <g transform="translate(90,70)"><circle r="34" fill="#fbf3df" stroke="#e0a526" stroke-width="5"/>
+    <line x1="0" y1="0" x2="0" y2="-24" stroke="#2b2823" stroke-width="4" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="-8" y2="-14" stroke="#2b2823" stroke-width="5" stroke-linecap="round"/>
+    <text y="58" text-anchor="middle" fill="#f6e2a8" font-size="16" font-family="Arial" font-weight="700">11:00 pm</text></g>
+  <rect x="0" y="225" width="640" height="75" fill="#6b5a48"/>
+  <ellipse cx="300" cy="245" rx="190" ry="26" fill="#8a3f52" opacity=".85"/>
+  <path d="M120 255 l12 -40 h26 l12 40z" fill="#e0a526"/><ellipse cx="145" cy="215" rx="34" ry="8" fill="#f6e2a8" opacity=".5"/>
+  ${lady(300,170,1.05,{sit:true})}
+  ${bottle(390,238,.9,"#b85c6e")}${bottle(422,240,.8,"#d9a440")}${bottle(452,238,.9,"#6b4a33")}${bottle(220,240,.8,"#9fb7a3",false)}
+`),
+
+B: SVG(`
+  <rect x="70" y="30" width="170" height="250" rx="24" fill="#2b2823"/>
+  <rect x="80" y="48" width="150" height="214" rx="12" fill="#fff"/>
+  <rect x="80" y="48" width="150" height="34" rx="12" fill="#5f8a6b"/><rect x="80" y="70" width="150" height="12" fill="#5f8a6b"/>
+  <circle cx="100" cy="65" r="10" fill="#e0a526"/><rect x="116" y="58" width="80" height="8" rx="4" fill="#fff" opacity=".85"/>
+  <rect x="92" y="96" width="100" height="26" rx="12" fill="#efe9dc"/><rect x="102" y="106" width="70" height="6" rx="3" fill="#a59c8a"/>
+  <rect x="118" y="132" width="100" height="26" rx="12" fill="#5f8a6b"/><rect x="128" y="142" width="74" height="6" rx="3" fill="#fff"/>
+  <rect x="92" y="168" width="110" height="26" rx="12" fill="#efe9dc"/><rect x="102" y="178" width="84" height="6" rx="3" fill="#a59c8a"/>
+  <rect x="140" y="204" width="78" height="30" rx="12" fill="#e0a526"/><text x="179" y="225" text-anchor="middle" font-family="Arial" font-weight="700" font-size="17" fill="#fff">✓ 50%</text>
+  <rect x="300" y="150" width="190" height="120" rx="6" fill="#8a3f52"/>
+  <path d="M300 150 l30 -36 h190 l-30 36z" fill="#a54f65"/><path d="M490 150 l30 -36 v120 l-30 36z" fill="#6e3242"/>
+  <rect x="385" y="114" width="20" height="156" fill="#e0a526" opacity=".9"/>
+  <rect x="320" y="175" width="62" height="44" rx="4" fill="#fffdf7" transform="rotate(-8 350 197)"/>
+  <path d="M330 203 q8 -14 16 0 t16 0" stroke="#2b2823" stroke-width="2" fill="none" transform="rotate(-8 350 197)"/>
+  ${bottle(560,250,1.6,"#b85c6e")}
+  <text x="560" y="254" text-anchor="middle" font-family="Georgia" font-size="9" fill="#fff" font-weight="700">MARIAM</text>
+`),
+
+C: SVG(`
+  <rect x="0" y="0" width="300" height="300" fill="#f3e2bf"/>
+  <path d="M10 70 h270 l-20 -36 h-230z" fill="#8a3f52"/>
+  ${[0,1,2,3,4,5].map(i=>`<path d="M${30+i*40} 70 q20 26 40 0" fill="${i%2?'#e0a526':'#a54f65'}"/>`).join("")}
+  <rect x="30" y="180" width="230" height="90" fill="#6b5a48"/>
+  <ellipse cx="80" cy="180" rx="38" ry="14" fill="#4a3424"/><ellipse cx="150" cy="180" rx="38" ry="14" fill="#5c3d28"/><ellipse cx="220" cy="180" rx="38" ry="14" fill="#3e2a1d"/>
+  ${[60,72,88,140,152,168,210,224,236].map((x,i)=>`<rect x="${x}" y="${170+(i%3)*3}" width="7" height="4" rx="1" fill="#7a5235"/>`).join("")}
+  <g transform="translate(150,130)"><path d="M-22 40 L-16 -8 Q0 -14 16 -8 L22 40Z" fill="#f4f1ea"/>
+    <rect x="-13" y="-30" width="26" height="22" rx="3" fill="#f4f1ea"/><circle cx="0" cy="-34" r="12" fill="#b88a64"/>
+    <path d="M-14 -36 q14 -14 28 0 v-6 q-14 -10 -28 0z" fill="#f4f1ea"/><path d="M-6 -24 q6 8 12 0 v8 q-6 4 -12 0z" fill="#5a5a5a"/></g>
+  <text x="150" y="292" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#fff">Abu Dhabi souq · oud</text>
+  <rect x="300" y="0" width="340" height="300" fill="#e3ede4"/>
+  <g font-family="Arial" font-weight="700">
+    <circle cx="380" cy="80" r="40" fill="#fff" stroke="#5f8a6b" stroke-width="4"/>
+    <path d="M380 112 v-30" stroke="#5f8a6b" stroke-width="4"/><path d="M380 98 q-14 -4 -16 6 q12 2 16 -6z" fill="#5f8a6b"/>
+    ${[0,72,144,216,288].map(a=>`<ellipse cx="380" cy="68" rx="9" ry="14" fill="#b85c6e" transform="rotate(${a} 380 72) translate(0 -6)"/>`).join("")}
+    <circle cx="380" cy="72" r="8" fill="#8a3f52"/>
+    <text x="380" y="140" text-anchor="middle" font-size="15" fill="#3f6249">France · rose oil</text>
+    <circle cx="560" cy="220" r="40" fill="#fff" stroke="#5f8a6b" stroke-width="4"/>
+    <text x="560" y="230" text-anchor="middle" font-size="26" fill="#3f6249">€</text>
+    <text x="560" y="282" text-anchor="middle" font-size="15" fill="#3f6249">Dubai agency</text>
+    <path d="M420 100 q100 10 110 85" stroke="#e0a526" stroke-width="5" fill="none" stroke-dasharray="10 8"/>
+    <path d="M520 178 l12 10 l4 -16z" fill="#e0a526"/>
+    <rect x="330" y="200" width="150" height="60" rx="12" fill="#fff"/>
+    <text x="405" y="225" text-anchor="middle" font-size="14" fill="#5b554c">rose oil cost</text>
+    <text x="405" y="250" text-anchor="middle" font-size="20" fill="#b85c6e">▲ 15%</text>
+  </g>
+`),
+
+D: SVG(`
+  <rect x="40" y="30" width="230" height="250" rx="10" fill="#fff" stroke="#e6dfd0" stroke-width="3"/>
+  <rect x="40" y="30" width="230" height="40" rx="10" fill="#b85c6e"/><rect x="40" y="58" width="230" height="12" fill="#b85c6e"/>
+  <text x="155" y="57" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#fff">Unpaid 😟</text>
+  ${[0,1,2,3,4].map(i=>`<circle cx="70" cy="${100+i*34}" r="10" fill="#efe9dc"/><rect x="90" y="${94+i*34}" width="90" height="10" rx="5" fill="#d9cfc0"/><text x="250" y="${105+i*34}" text-anchor="end" font-family="Arial" font-size="15" font-weight="700" fill="#8a3f52">${[450,380,520,300,400][i]}</text>`).join("")}
+  <line x1="60" y1="262" x2="250" y2="262" stroke="#2b2823" stroke-width="2"/>
+  <text x="155" y="277" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b554c">total: more than 2,000 dirhams</text>
+  <g transform="translate(330,70)">
+    ${[0,1,2].map(i=>`<rect x="${i*14}" y="${i*16}" width="150" height="74" rx="8" fill="${['#7aa284','#6b9476','#5f8a6b'][i]}" stroke="#fff" stroke-width="2"/>`).join("")}
+    <circle cx="103" cy="69" r="20" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>
+    <text x="103" y="76" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#fff">3000</text>
+  </g>
+  <text x="430" y="210" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#3f6249">loan from Dad</text>
+  <g transform="translate(470,245) rotate(-4)">
+    <rect x="-150" y="-26" width="300" height="48" rx="10" fill="#2b2823"/>
+    <text x="0" y="6" text-anchor="middle" font-family="Georgia" font-size="20" font-weight="700" fill="#e0a526">No deposit, no perfume!</text>
+  </g>
+`),
+
+E: SVG(`
+  <rect x="0" y="0" width="640" height="300" fill="#eef0e6"/>
+  <rect x="40" y="40" width="220" height="200" rx="12" fill="#fff" stroke="#d9cfc0" stroke-width="3"/>
+  <rect x="40" y="40" width="220" height="40" rx="12" fill="#5f8a6b"/><rect x="40" y="66" width="220" height="14" fill="#5f8a6b"/>
+  <text x="150" y="67" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#fff">EXAM WEEKS</text>
+  ${[...Array(14)].map((_,i)=>{const x=58+(i%7)*28,y=98+Math.floor(i/7)*56;return `<rect x="${x}" y="${y}" width="22" height="40" rx="4" fill="${i>=7&&i<12?'#fbefd2':'#efe9dc'}"/>`}).join("")}
+  <text x="150" y="228" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#8a3f52">🔒 Shop closed</text>
+  ${lady(390,150,1.15)}
+  <g transform="translate(450,190)">
+    <rect x="0" y="0" width="120" height="18" rx="3" fill="#8a3f52"/><rect x="8" y="-18" width="110" height="18" rx="3" fill="#5f8a6b"/>
+    <rect x="-4" y="-36" width="116" height="18" rx="3" fill="#e0a526"/><rect x="10" y="-54" width="100" height="18" rx="3" fill="#24313a"/>
+  </g>
+  <path d="M520 70 l14 -28 l14 28z" fill="#e0a526"/><rect x="527" y="70" width="14" height="10" fill="#e0a526"/>
+  <text x="534" y="105" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#3f6249">studies first</text>
+  <path d="M440 120 q20 -30 60 -40" stroke="#5f8a6b" stroke-width="3" fill="none" stroke-dasharray="6 6"/>
+`),
+
+F: SVG(`
+  <rect x="0" y="0" width="640" height="300" fill="#24313a"/>
+  <rect x="160" y="26" width="320" height="150" rx="8" fill="#fbf7ee"/>
+  <text x="320" y="56" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#3f6249">Skills from a small business</text>
+  ${[["Customer service",120],["Money planning",100],["Problem solving",140]].map((r,i)=>`<text x="190" y="${92+i*30}" font-family="Arial" font-size="13" fill="#5b554c">${r[0]}</text><rect x="320" y="${80+i*30}" width="${r[1]}" height="16" rx="4" fill="${['#5f8a6b','#e0a526','#b85c6e'][i]}"/>`).join("")}
+  <rect x="0" y="230" width="640" height="70" fill="#3a2f28"/>
+  ${lady(135,150,.85,{c:"#14141a"})}
+  <path d="M90 300 v-80 h90 v80z" fill="#6b5a48"/><rect x="82" y="212" width="106" height="12" rx="3" fill="#8a7a5c"/>
+  <text x="135" y="270" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#f6e2a8">Dr Hessa</text>
+  ${[0,1,2,3,4,5,6].map(i=>`<g transform="translate(${270+i*52},270)"><circle r="16" fill="${i%2?'#1d1d22':'#f4f1ea'}"/><path d="M-22 30 q22 -36 44 0z" fill="${i%2?'#1d1d22':'#f4f1ea'}"/></g>`).join("")}
+`),
+
+G: SVG(`
+  <rect x="0" y="0" width="640" height="300" fill="#fbf3df"/>
+  <g font-family="Arial" font-weight="700">
+    <rect x="40" y="70" width="120" height="150" rx="16" fill="#e3ede4" stroke="#5f8a6b" stroke-width="4"/>
+    <rect x="60" y="56" width="80" height="20" rx="5" fill="#5f8a6b"/>
+    ${[0,1,2].map(i=>`<circle cx="${78+i*22}" cy="${180-i*14}" r="12" fill="#e0a526" stroke="#b8892a" stroke-width="2"/>`).join("")}
+    <text x="100" y="250" text-anchor="middle" font-size="14" fill="#3f6249">My money</text>
+    <rect x="190" y="70" width="120" height="150" rx="16" fill="#fbefd2" stroke="#e0a526" stroke-width="4"/>
+    <rect x="210" y="56" width="80" height="20" rx="5" fill="#e0a526"/>
+    ${bottle(250,175,1.3,"#b85c6e")}
+    <text x="250" y="250" text-anchor="middle" font-size="14" fill="#8a5f00">Business money</text>
+    <text x="175" y="150" text-anchor="middle" font-size="30" fill="#8a3f52">≠</text>
+    <rect x="350" y="60" width="120" height="160" rx="6" fill="#fff" stroke="#d9cfc0" stroke-width="3"/>
+    <text x="410" y="90" text-anchor="middle" font-size="16" fill="#2b2823">LICENCE</text>
+    ${[0,1,2,3].map(i=>`<rect x="368" y="${108+i*18}" width="${84-i*10}" height="7" rx="3" fill="#d9cfc0"/>`).join("")}
+    <circle cx="440" cy="196" r="15" fill="#b85c6e"/><path d="M432 196 l6 6 l10 -12" stroke="#fff" stroke-width="3" fill="none"/>
+    <g transform="translate(550,140)">
+      <path d="M-60 0 l60 -26 l60 26 l-60 26z" fill="#2b2823"/>
+      <path d="M-34 12 v26 q34 22 68 0 v-26 l-34 14z" fill="#3a3a40"/>
+      <path d="M50 4 v40" stroke="#e0a526" stroke-width="4"/><circle cx="50" cy="48" r="6" fill="#e0a526"/>
+      <text x="0" y="90" text-anchor="middle" font-size="15" fill="#3f6249">Teacher first!</text>
+    </g>
+  </g>
+`)
+};
+
+/* ============ STATE ============ */
+const $ = s => document.querySelector(s);
+const aud = $("#aud");
+let cur = 0, playing = false, rate = 1, auto = true, hidden = false;
+let useTTS = false, ttsUtter = null, ttsTimer = null, ttsStart = 0, ttsEst = 0;
+const done = new Set();
+const audioOK = {}; // id -> true/false
+
+/* ============ BUILD ============ */
+$("#coverArt").innerHTML = ART.cover;
+$("#stars").innerHTML = PARAS.map((p,i)=>`<div class="star" data-i="${i}">${p.id}</div>`).join("");
+$("#tabs").innerHTML = PARAS.map((p,i)=>`<button class="tab" data-i="${i}">${p.id}</button>`).join("");
+$("#glossBody").innerHTML = WORDS.map(w=>`<tr><td><b>${w.w}</b><br><span style="font-size:.85em;color:var(--ink-soft)">${w.m}</span></td><td class="ar">${w.ar}</td><td class="p">${w.p}</td></tr>`).join("");
+
+function markup(p){
+  let h = p.text.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  WORDS.filter(w=>w.p===p.id).forEach((w,k)=>{
+    h = h.replace(w.match, m=>`<span class="kw" tabindex="0" data-k="${WORDS.indexOf(w)}">${m}</span>`);
+  });
+  return h;
+}
+
+function render(){
+  const p = PARAS[cur];
+  $("#art").innerHTML = ART[p.id];
+  $("#pLetter").textContent = p.id;
+  $("#pCount").textContent = `Paragraph ${cur+1} of ${PARAS.length}`;
+  $("#pText").innerHTML = markup(p);
+  $("#prevBtn").disabled = cur===0;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",+t.dataset.i===cur));
+  document.querySelectorAll(".star").forEach(s=>{const i=+s.dataset.i;s.classList.toggle("done",done.has(i));s.classList.toggle("now",i===cur && $("#reader").style.display==="block")});
+  setFill(0); $("#tNow").textContent="0:00"; $("#tDur").textContent="–:––";
+  loadAudio();
+}
+
+/* ============ AUDIO ============ */
+function loadAudio(){
+  stopAll();
+  const id = PARAS[cur].id;
+  if(audioOK[id]===false){ useTTS = true; label(); return; }
+  useTTS = false;
+  aud.src = `para-${id}.mp3`;
+  aud.playbackRate = rate;
+  label();
+}
+aud.addEventListener("error",()=>{
+  const id = PARAS[cur].id; audioOK[id]=false; useTTS = true; label();
+  if(playing){ playing=false; play(); }
+});
+aud.addEventListener("loadedmetadata",()=>{ audioOK[PARAS[cur].id]=true; $("#tDur").textContent=fmt(aud.duration); label(); });
+aud.addEventListener("timeupdate",()=>{ if(aud.duration){ setFill(aud.currentTime/aud.duration); $("#tNow").textContent=fmt(aud.currentTime);} });
+aud.addEventListener("ended",finishPara);
+
+function label(){
+  $("#srcLbl").textContent = useTTS ? "device voice" : (audioOK[PARAS[cur].id] ? "studio narration" : "");
+}
+function fmt(t){ t=Math.max(0,t||0); return Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"); }
+function setFill(f){ $("#fill").style.width=(Math.min(1,f)*100)+"%"; }
+function setPlayIcon(){ $("#playBtn").textContent = playing ? "❚❚" : "▶"; $("#playBtn").setAttribute("aria-label",playing?"Pause":"Play"); }
+
+function play(){
+  if(playing) return;
+  playing = true; setPlayIcon();
+  if(useTTS){ speak(); return; }
+  aud.playbackRate = rate;
+  const pr = aud.play();
+  if(pr && pr.catch) pr.catch(()=>{}); // error handler switches to TTS
+}
+function pause(){
+  playing = false; setPlayIcon();
+  if(useTTS){ speechSynthesis.cancel(); clearInterval(ttsTimer); clearSpeaking(); }
+  else aud.pause();
+}
+function stopAll(){
+  playing=false; setPlayIcon();
+  try{ aud.pause(); }catch(e){}
+  if("speechSynthesis" in window) speechSynthesis.cancel();
+  clearInterval(ttsTimer); clearSpeaking();
+}
+
+/* device-voice fallback with sentence highlighting */
+function pickVoice(){
+  const vs = speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+  return vs.find(v=>/en-GB/i.test(v.lang)&&/female|Libby|Sonia|Serena|Kate|Google UK English Female/i.test(v.name))
+      || vs.find(v=>/en-GB/i.test(v.lang)) || vs[0] || null;
+}
+function speak(){
+  if(!("speechSynthesis" in window)){ playing=false; setPlayIcon(); alert("Audio files not found and this browser has no voice."); return; }
+  speechSynthesis.cancel();
+  const text = PARAS[cur].text;
+  const u = new SpeechSynthesisUtterance(text);
+  const v = pickVoice(); if(v){u.voice=v; u.lang=v.lang;} else u.lang="en-GB";
+  u.rate = 0.92*rate;
+  ttsEst = text.length/ (14.5*rate); ttsStart = Date.now();
+  $("#tDur").textContent = "~"+fmt(ttsEst);
+  u.onboundary = e=>{ if(e.name==="word"||e.charIndex!=null) highlightAt(e.charIndex); };
+  u.onend = ()=>{ clearInterval(ttsTimer); clearSpeaking(); if(playing){ setFill(1); finishPara(); } };
+  clearInterval(ttsTimer);
+  ttsTimer = setInterval(()=>{ const t=(Date.now()-ttsStart)/1000; setFill(t/ttsEst); $("#tNow").textContent=fmt(t); },250);
+  ttsUtter = u; speechSynthesis.speak(u);
+}
+function highlightAt(ci){
+  if(hidden) return;
+  const text = PARAS[cur].text;
+  const starts=[0]; text.replace(/[.!?]["”]?\s+/g,(m,off)=>{starts.push(off+m.length);return m;});
+  let si=0; for(let i=0;i<starts.length;i++) if(ci>=starts[i]) si=i;
+  const a=starts[si], b=starts[si+1]??text.length;
+  const before=text.slice(0,a), sent=text.slice(a,b), after=text.slice(b);
+  const tmp={id:PARAS[cur].id,text:before+"\u0001"+sent+"\u0002"+after};
+  $("#pText").innerHTML = markup(tmp).replace("\u0001",'<span class="speaking">').replace("\u0002","</span>");
+}
+function clearSpeaking(){ if(document.querySelector("#pText .speaking")) $("#pText").innerHTML = markup(PARAS[cur]); }
+
+function finishPara(){
+  playing=false; setPlayIcon();
+  done.add(cur);
+  document.querySelector(`.star[data-i="${cur}"]`).classList.add("done");
+  if(done.size===PARAS.length && cur===PARAS.length-1){ return showFinish(); }
+  if(auto && cur<PARAS.length-1){ setTimeout(()=>{ go(cur+1); play(); },900); }
+  else if(done.size===PARAS.length) showFinish();
+}
+function go(i){ if(i<0||i>=PARAS.length) return; cur=i; render(); window.scrollTo({top:0,behavior:"smooth"}); }
+
+/* seek */
+$("#track").addEventListener("click",e=>{
+  if(useTTS||!aud.duration) return;
+  const r=e.currentTarget.getBoundingClientRect(); aud.currentTime=((e.clientX-r.left)/r.width)*aud.duration;
+});
+
+/* ============ UI EVENTS ============ */
+$("#startBtn").onclick=()=>{ showReader(); render(); play(); };
+$("#playBtn").onclick=()=> playing?pause():play();
+$("#prevBtn").onclick=()=>go(cur-1);
+$("#nextBtn").onclick=()=>{ if(cur<PARAS.length-1) go(cur+1); else if(done.size===PARAS.length) showFinish(); };
+$("#tabs").onclick=e=>{ const t=e.target.closest(".tab"); if(t) go(+t.dataset.i); };
+$("#stars").onclick=e=>{ const s=e.target.closest(".star"); if(s){ showReader(); go(+s.dataset.i);} };
+document.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{
+  rate=+b.dataset.rate; document.querySelectorAll("[data-rate]").forEach(x=>x.classList.toggle("on",x===b));
+  aud.playbackRate=rate; if(useTTS&&playing){ playing=false; play(); }
+});
+$("#autoBtn").onclick=()=>{ auto=!auto; $("#autoBtn").classList.toggle("on",auto); };
+$("#hideBtn").onclick=()=>{ hidden=!hidden; $("#pText").classList.toggle("hidden",hidden); $("#hideBtn").textContent = hidden?"👀 Show text":"🙈 Listen only"; clearSpeaking(); };
+$("#coverBtn").onclick=()=>{ stopAll(); $("#reader").style.display="none"; $("#finish").style.display="none"; $("#cover").style.display="block"; render(); };
+$("#againBtn").onclick=()=>{ $("#finish").style.display="none"; showReader(); go(0); };
+const gloss=$("#gloss");
+$("#glossBtn1").onclick=$("#glossBtn2").onclick=()=>gloss.showModal();
+$("#glossClose").onclick=()=>gloss.close();
+gloss.addEventListener("click",e=>{ if(e.target===gloss) gloss.close(); });
+
+function showReader(){ $("#cover").style.display="none"; $("#finish").style.display="none"; $("#reader").style.display="block"; }
+
+/* keyword popover */
+const pop=$("#pop");
+function openPop(el){
+  const w=WORDS[+el.dataset.k];
+  pop.innerHTML=`<b>${w.w}</b> — ${w.m}<span class="ar">${w.ar}</span><button class="say">🔊 hear it</button>`;
+  pop.style.display="block";
+  const r=el.getBoundingClientRect();
+  let left=r.left+window.scrollX; const maxL=window.scrollX+document.documentElement.clientWidth-pop.offsetWidth-12;
+  pop.style.left=Math.max(12,Math.min(left,maxL))+"px";
+  pop.style.top=(r.bottom+window.scrollY+8)+"px";
+  pop.querySelector(".say").onclick=ev=>{ ev.stopPropagation(); if("speechSynthesis" in window){ const u=new SpeechSynthesisUtterance(w.w); const v=pickVoice(); if(v)u.voice=v; u.rate=.85; speechSynthesis.speak(u);} };
+}
+$("#pText").addEventListener("click",e=>{ const k=e.target.closest(".kw"); if(k){ e.stopPropagation(); openPop(k);} });
+$("#pText").addEventListener("keydown",e=>{ const k=e.target.closest(".kw"); if(k&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); openPop(k);} });
+document.addEventListener("click",e=>{ if(!pop.contains(e.target)) pop.style.display="none"; });
+
+document.addEventListener("keydown",e=>{
+  if($("#reader").style.display!=="block"||e.target.tagName==="INPUT"||gloss.open) return;
+  if(e.code==="Space"){ e.preventDefault(); playing?pause():play(); }
+  if(e.key==="ArrowRight") go(cur+1);
+  if(e.key==="ArrowLeft") go(cur-1);
+});
+
+/* ============ FINISH + CONFETTI ============ */
+function showFinish(){
+  stopAll();
+  $("#reader").style.display="none"; $("#cover").style.display="none"; $("#finish").style.display="block";
+  $("#certDate").textContent=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  window.scrollTo({top:0,behavior:"smooth"}); confetti();
+}
+function confetti(){
+  const c=$("#confetti"), x=c.getContext("2d"); c.width=innerWidth; c.height=innerHeight;
+  const cols=["#5f8a6b","#e0a526","#b85c6e","#f6e2a8","#3f6249"];
+  const ps=[...Array(160)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,r:4+Math.random()*5,c:cols[Math.floor(Math.random()*5)],a:Math.random()*6}));
+  let f=0; (function tick(){ x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1; x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.fillStyle=p.c; x.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); x.restore();});
+    if(++f<220) requestAnimationFrame(tick); else x.clearRect(0,0,c.width,c.height); })();
+}
+if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{};
+render();
+</script>
+</body>
+</html>
